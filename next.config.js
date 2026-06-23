@@ -12,10 +12,6 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs'],
   },
-  // Prevent Prisma from being called at build time
-  outputFileTracingExcludes: {
-    '*': ['node_modules/@prisma/engines/**'],
-  },
 }
 
 module.exports = nextConfig
