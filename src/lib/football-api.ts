@@ -11,13 +11,18 @@ function getFootballApi() {
 
 // Competition codes used by football-data.org
 export const TOP_LEAGUES = [
-  { code: "PL",  name: "Premier League",        country: "England" },
-  { code: "PD",  name: "La Liga",               country: "Spain" },
-  { code: "BL1", name: "Bundesliga",            country: "Germany" },
-  { code: "SA",  name: "Serie A",               country: "Italy" },
-  { code: "FL1", name: "Ligue 1",               country: "France" },
-  { code: "CL",  name: "UEFA Champions League", country: "Europe" },
-  { code: "EL",  name: "UEFA Europa League",    country: "Europe" },
+  // International (active June–July 2026 — World Cup season)
+  { code: "WC",  name: "FIFA World Cup",         country: "World" },
+  { code: "EC",  name: "UEFA Euro",              country: "Europe" },
+  { code: "CLI", name: "Copa Libertadores",      country: "South America" },
+  // Club leagues (active Aug–May)
+  { code: "PL",  name: "Premier League",         country: "England" },
+  { code: "PD",  name: "La Liga",                country: "Spain" },
+  { code: "BL1", name: "Bundesliga",             country: "Germany" },
+  { code: "SA",  name: "Serie A",                country: "Italy" },
+  { code: "FL1", name: "Ligue 1",                country: "France" },
+  { code: "CL",  name: "UEFA Champions League",  country: "Europe" },
+  { code: "EL",  name: "UEFA Europa League",     country: "Europe" },
 ]
 
 const LEAGUE_MAP = Object.fromEntries(TOP_LEAGUES.map((l) => [l.code, l]))
