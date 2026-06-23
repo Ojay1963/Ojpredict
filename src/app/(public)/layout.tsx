@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { PublicLayout } from "@/components/layout/PublicLayout"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
