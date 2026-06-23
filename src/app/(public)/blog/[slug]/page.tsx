@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { formatDate } from "@/lib/utils"
 import Image from "next/image"
+import { AdSlot } from "@/components/ads/AdSlot"
 import type { Metadata } from "next"
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
@@ -64,7 +65,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
 
-      <div className="mt-12 p-6 bg-gradient-to-r from-[#0C0975] to-[#1a1a8c] rounded-2xl text-white text-center">
+      {/* Ad — end of article, before CTA */}
+      <AdSlot size="rectangle" className="mt-10 flex justify-center" />
+
+      <div className="mt-8 p-6 bg-gradient-to-r from-[#0C0975] to-[#1a1a8c] rounded-2xl text-white text-center">
         <h3 className="text-xl font-bold mb-2">Get Today's Tips</h3>
         <p className="text-white/70 text-sm mb-4">View our AI-powered predictions for today's matches.</p>
         <a href="/" className="inline-block bg-[#F4A500] text-[#0C0975] font-bold px-8 py-3 rounded-xl hover:bg-yellow-400 transition-colors">

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { formatDate } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
+import { AdSlot } from "@/components/ads/AdSlot"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -24,6 +25,9 @@ export default async function BlogPage() {
         <h1 className="text-3xl font-black text-[#0C0975] mb-2">Football Blog & News</h1>
         <p className="text-gray-500">League previews, betting guides, and football analysis from OJ Predict.</p>
       </div>
+
+      {/* Ad — below page header */}
+      <AdSlot size="leaderboard" className="mb-6" />
 
       {posts.length === 0 ? (
         <div className="bg-white rounded-xl border border-dashed border-gray-300 p-16 text-center">

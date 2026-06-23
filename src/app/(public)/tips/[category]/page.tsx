@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { prisma } from "@/lib/prisma"
 import { TipCard } from "@/components/tips/TipCard"
+import { AdSlot } from "@/components/ads/AdSlot"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import type { TipWithMatch } from "@/types"
@@ -86,6 +87,9 @@ export default async function TipCategoryPage({ params }: { params: { category: 
           </a>
         ))}
       </div>
+
+      {/* Ad — between category nav and tips grid */}
+      <AdSlot size="leaderboard" className="mb-4" />
 
       {/* Tips Grid */}
       {tips.length === 0 ? (

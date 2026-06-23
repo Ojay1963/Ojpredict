@@ -6,6 +6,7 @@ import { HeroSection } from "@/components/tips/HeroSection"
 import { WinningsTicker } from "@/components/tips/WinningsTicker"
 import { StatsBar } from "@/components/tips/StatsBar"
 import { VIPBanner } from "@/components/tips/VIPBanner"
+import { AdSlot } from "@/components/ads/AdSlot"
 import type { TipWithMatch } from "@/types"
 
 async function getTodaysTips(): Promise<TipWithMatch[]> {
@@ -54,6 +55,11 @@ export default async function HomePage() {
       <WinningsTicker />
       <StatsBar won={winnings.won} total={winnings.total} accuracy={winnings.accuracy} />
 
+      {/* Ad — below stats bar */}
+      <div className="container mx-auto px-4">
+        <AdSlot size="leaderboard" />
+      </div>
+
       <div className="container mx-auto px-4 py-10">
         {/* Free Tips */}
         <div className="mb-12">
@@ -77,6 +83,9 @@ export default async function HomePage() {
             </div>
           )}
         </div>
+
+        {/* Ad — between free tips and VIP section */}
+        <AdSlot size="billboard" className="mb-4" />
 
         {/* VIP Tips Banner */}
         <VIPBanner />
