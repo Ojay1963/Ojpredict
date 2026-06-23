@@ -46,15 +46,34 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { matchId, category, prediction, odds, confidence, aiAnalysis, vipOnly, publishNow } = await req.json()
+    const { matchId, homeTeam, awayTeam, league, country, kickoff, category, prediction, odds, confidence, aiAnalysis, vipOnly, publishNow } = await req.json()
 
-    if (!matchId || !category || !prediction) {
-      return NextResponse.json({ error: "matchId, category, and prediction are required" }, { status: 400 })
+    if (!category || !prediction) {
+      return NextResponse.json({ error: "category and prediction are required" }, { status: 400 })
+    }
+
+    // Resolve match: use existing matchId or create a new match on the fly
+    let resolvedMatchId = matchId
+    if (!resolvedMatchId) {
+      if (!homeTeam || !awayTeam || !league || !kickoff) {
+        return NextResponse.json({ error: "Provide either matchId or homeTeam, awayTeam, league, and kickoff" }, { status: 400 })
+      }
+      const newMatch = await prisma.match.create({
+        data: {
+          homeTeam,
+          awayTeam,
+          league,
+          country: country ?? "Unknown",
+          kickoff: new Date(kickoff),
+          status: "UPCOMING",
+        },
+      })
+      resolvedMatchId = newMatch.id
     }
 
     const tip = await prisma.tips.create({
       data: {
-        matchId,
+        matchId: resolvedMatchId,
         category,
         prediction,
         odds: odds ? parseFloat(odds) : null,
