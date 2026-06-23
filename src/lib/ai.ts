@@ -1,8 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk"
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
+function getAnthropic() {
+  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+}
 
 export interface MatchContext {
   homeTeam: string
@@ -45,7 +45,7 @@ Respond ONLY with valid JSON in this exact format:
 tipCategory must be one of: HOME_WIN, AWAY_WIN, DOUBLE_CHANCE, DRAW, OVER_15, OVER_25, OVER_35, BTTS, HT_OVER_05, SURE_2_ODDS, OJ_BANKER
 confidence must be 1-100.`
 
-  const message = await anthropic.messages.create({
+  const message = await getAnthropic().messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 512,
     messages: [{ role: "user", content: prompt }],

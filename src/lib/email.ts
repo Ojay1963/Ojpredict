@@ -1,10 +1,13 @@
 import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM_EMAIL ?? "tips@ojpredict.com"
 
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY)
+}
+
 export async function sendWelcomeEmail(to: string, name: string) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: "Welcome to OJ Predict!",
@@ -36,7 +39,7 @@ export async function sendVIPTipAlert(
   name: string,
   tip: { homeTeam: string; awayTeam: string; prediction: string; odds?: number; kickoff: string }
 ) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: `[OJ VIP] New Tip: ${tip.homeTeam} vs ${tip.awayTeam}`,
@@ -72,7 +75,7 @@ export async function sendSubscriptionConfirmation(
   plan: string,
   endDate: string
 ) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: `OJ Predict VIP Subscription Confirmed!`,

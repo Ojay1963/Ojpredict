@@ -1,13 +1,15 @@
 import axios from "axios"
 import crypto from "crypto"
 
-const paystackApi = axios.create({
-  baseURL: "https://api.paystack.co",
-  headers: {
-    Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-    "Content-Type": "application/json",
-  },
-})
+function getPaystackApi() {
+  return axios.create({
+    baseURL: "https://api.paystack.co",
+    headers: {
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+      "Content-Type": "application/json",
+    },
+  })
+}
 
 export const PLANS = {
   OJ_GOLD: {
@@ -31,18 +33,18 @@ export async function initializeTransaction(params: {
   metadata?: Record<string, any>
   callback_url?: string
 }) {
-  const { data } = await paystackApi.post("/transaction/initialize", params)
+  const { data } = await getPaystackApi().post("/transaction/initialize", params)
   return data.data
 }
 
 export async function verifyTransaction(reference: string) {
-  const { data } = await paystackApi.get(`/transaction/verify/${reference}`)
+  const { data } = await getPaystackApi().get(`/transaction/verify/${reference}`)
   return data.data
 }
 
 export async function createSubscriptionPlan(plan: keyof typeof PLANS) {
   const p = PLANS[plan]
-  const { data } = await paystackApi.post("/plan", {
+  const { data } = await getPaystackApi().post("/plan", {
     name: p.name,
     interval: p.interval,
     amount: p.amount,
