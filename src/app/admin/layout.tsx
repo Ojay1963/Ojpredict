@@ -25,7 +25,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       {/* Sidebar */}
       <aside className="w-64 bg-[#0C0975] text-white flex-shrink-0 min-h-screen">
         <div className="p-6 border-b border-white/20">
-          <div className="flex items-center gap-2">
+          <a href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-[#F4A500] rounded-lg flex items-center justify-center">
               <span className="font-black text-[#0C0975] text-xs">OJ</span>
             </div>
@@ -33,7 +33,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <p className="font-bold text-sm">OJ Predict</p>
               <p className="text-white/50 text-xs">Admin Panel</p>
             </div>
-          </div>
+          </a>
         </div>
 
         <nav className="p-4 space-y-1">

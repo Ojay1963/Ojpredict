@@ -31,12 +31,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
+            <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 bg-[#F4A500] rounded-lg flex items-center justify-center">
                 <span className="font-black text-[#0C0975] text-sm">OJ</span>
               </div>
               <span className="font-bold text-xl">PREDICT</span>
-            </div>
+            </Link>
             <p className="text-white/70 text-sm mb-4 leading-relaxed">
               Nigeria's most trusted AI-powered football prediction platform. Predict Smart. Win Big.
             </p>
