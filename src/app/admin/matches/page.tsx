@@ -45,14 +45,22 @@ export default function AdminMatchesPage() {
           <h1 className="text-2xl font-bold text-gray-900">Matches</h1>
           <p className="text-gray-500 text-sm">Manage fixtures and sync from API-Football</p>
         </div>
-        <button
-          onClick={syncMatches}
-          disabled={syncing}
-          className="flex items-center gap-2 bg-teal-600 text-white font-semibold px-5 py-2.5 rounded-xl hover:bg-teal-700 disabled:opacity-60 text-sm"
-        >
-          <RefreshCw className={`w-4 h-4 ${syncing ? "animate-spin" : ""}`} />
-          {syncing ? "Syncing..." : "Sync Matches"}
-        </button>
+        <div className="flex gap-3">
+          <a
+            href="/admin/matches/new"
+            className="flex items-center gap-2 bg-[#0C0975] text-white font-semibold px-5 py-2.5 rounded-xl hover:bg-[#1a1a8c] text-sm"
+          >
+            + Add Match
+          </a>
+          <button
+            onClick={syncMatches}
+            disabled={syncing}
+            className="flex items-center gap-2 bg-teal-600 text-white font-semibold px-5 py-2.5 rounded-xl hover:bg-teal-700 disabled:opacity-60 text-sm"
+          >
+            <RefreshCw className={`w-4 h-4 ${syncing ? "animate-spin" : ""}`} />
+            {syncing ? "Syncing..." : "Sync Matches"}
+          </button>
+        </div>
       </div>
 
       {loading ? (
