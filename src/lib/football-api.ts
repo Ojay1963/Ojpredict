@@ -2,70 +2,87 @@ import axios from "axios"
 
 function getFootballApi() {
   return axios.create({
-    baseURL: "https://api-football-v1.p.rapidapi.com/v3",
+    baseURL: "https://api.football-data.org/v4",
     headers: {
-      "X-RapidAPI-Key": process.env.RAPIDAPI_KEY ?? "",
-      "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
+      "X-Auth-Token": process.env.FOOTBALL_DATA_API_KEY ?? "",
     },
   })
 }
 
-export async function getFixtures(date: string, leagueId?: number) {
-  const params: Record<string, any> = { date, timezone: "Africa/Lagos" }
-  if (leagueId) params.league = leagueId
-  const { data } = await getFootballApi().get("/fixtures", { params })
-  return data.response ?? []
+// Competition codes used by football-data.org
+export const TOP_LEAGUES = [
+  { code: "PL",  name: "Premier League",        country: "England" },
+  { code: "PD",  name: "La Liga",               country: "Spain" },
+  { code: "BL1", name: "Bundesliga",            country: "Germany" },
+  { code: "SA",  name: "Serie A",               country: "Italy" },
+  { code: "FL1", name: "Ligue 1",               country: "France" },
+  { code: "CL",  name: "UEFA Champions League", country: "Europe" },
+  { code: "EL",  name: "UEFA Europa League",    country: "Europe" },
+]
+
+const LEAGUE_MAP = Object.fromEntries(TOP_LEAGUES.map((l) => [l.code, l]))
+
+// One call returns all competitions for the given date
+export async function getFixtures(date: string) {
+  const { data } = await getFootballApi().get("/matches", {
+    params: {
+      dateFrom: date,
+      dateTo: date,
+      competitions: TOP_LEAGUES.map((l) => l.code).join(","),
+    },
+  })
+  return (data.matches ?? []) as FootballDataMatch[]
 }
 
 export async function getLiveFixtures() {
-  const { data } = await getFootballApi().get("/fixtures", {
-    params: { live: "all" },
+  const { data } = await getFootballApi().get("/matches", {
+    params: {
+      status: "IN_PLAY,PAUSED",
+      competitions: TOP_LEAGUES.map((l) => l.code).join(","),
+    },
   })
-  return data.response ?? []
+  return (data.matches ?? []) as FootballDataMatch[]
 }
 
-export async function getFixtureById(fixtureId: number) {
-  const { data } = await getFootballApi().get("/fixtures", {
-    params: { id: fixtureId },
-  })
-  return data.response?.[0] ?? null
+export async function getFixtureById(matchId: number) {
+  const { data } = await getFootballApi().get(`/matches/${matchId}`)
+  return data as FootballDataMatch | null
 }
 
-export async function getH2H(h2h: string) {
-  const { data } = await getFootballApi().get("/fixtures/headtohead", {
-    params: { h2h, last: 10 },
-  })
-  return data.response ?? []
+export async function getStandings(competitionCode: string) {
+  const { data } = await getFootballApi().get(`/competitions/${competitionCode}/standings`)
+  return data.standings ?? []
 }
 
-export async function getTeamForm(teamId: number, leagueId: number, season: number) {
-  const { data } = await getFootballApi().get("/teams/statistics", {
-    params: { team: teamId, league: leagueId, season },
+export async function getTeamMatches(teamId: number, limit = 5) {
+  const { data } = await getFootballApi().get(`/teams/${teamId}/matches`, {
+    params: { status: "FINISHED", limit },
   })
-  return data.response ?? null
+  return data.matches ?? []
 }
 
-export async function getStandings(leagueId: number, season: number) {
-  const { data } = await getFootballApi().get("/standings", {
-    params: { league: leagueId, season },
-  })
-  return data.response ?? []
+// Normalise football-data.org status → our DB enum
+export function normaliseStatus(status: string): "UPCOMING" | "LIVE" | "FT" {
+  if (status === "IN_PLAY" || status === "PAUSED") return "LIVE"
+  if (status === "FINISHED") return "FT"
+  return "UPCOMING"
 }
 
-export async function getOdds(fixtureId: number) {
-  const { data } = await getFootballApi().get("/odds", {
-    params: { fixture: fixtureId, bookmaker: 6 },
-  })
-  return data.response ?? []
+export function getLeagueInfo(competitionCode: string) {
+  return LEAGUE_MAP[competitionCode] ?? { name: competitionCode, country: "Unknown" }
 }
 
-export const TOP_LEAGUES = [
-  { id: 39, name: "Premier League", country: "England" },
-  { id: 140, name: "La Liga", country: "Spain" },
-  { id: 78, name: "Bundesliga", country: "Germany" },
-  { id: 135, name: "Serie A", country: "Italy" },
-  { id: 61, name: "Ligue 1", country: "France" },
-  { id: 2, name: "UEFA Champions League", country: "Europe" },
-  { id: 3, name: "UEFA Europa League", country: "Europe" },
-  { id: 332, name: "NPFL", country: "Nigeria" },
-]
+// Types
+export interface FootballDataMatch {
+  id: number
+  utcDate: string
+  status: string
+  venue: string | null
+  competition: { id: number; name: string; code: string }
+  homeTeam: { id: number; name: string; shortName: string; crest: string }
+  awayTeam: { id: number; name: string; shortName: string; crest: string }
+  score: {
+    fullTime: { home: number | null; away: number | null }
+    halfTime: { home: number | null; away: number | null }
+  }
+}
